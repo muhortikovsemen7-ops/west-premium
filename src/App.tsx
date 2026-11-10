@@ -1,0 +1,63 @@
+import { useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { ArrowDown, ArrowRight, ArrowUpRight, Check, CheckCircle2, ChevronDown, CreditCard, Download, HelpCircle, MessageCircle, Send, ShieldCheck, Smartphone, Sparkles, WalletCards, Zap } from 'lucide-react'
+import { REFERRAL_URL, TELEGRAM_HANDLE, TELEGRAM_URL } from './config'
+
+const steps = [
+  { icon: Smartphone, title: 'Скачай приложение', desc: 'Установи Ozon Банк из App Store, RuStore или AppGallery.' },
+  { icon: CreditCard, title: 'Закажи карту', desc: 'Нажми кнопку оформления на баннере и перейди по реферальной ссылке.' },
+  { icon: ShieldCheck, title: 'Пройди верификацию', desc: 'В приложении открой профиль, найди раздел «Повысить» и выбери доступный способ идентификации.' },
+  { icon: Send, title: 'Напиши менеджеру', desc: 'Сообщи о выполнении условий менеджеру в Telegram.' },
+  { icon: CheckCircle2, title: 'Готово!', desc: 'Дождись проверки выполнения условий и возможного начисления вознаграждения.' },
+]
+const faq = [
+  { q: 'Сколько можно получить?', a: 'В описании предложения указаны 300 ₽ за оформление карты и дополнительные 50 ₽ за выполнение дополнительного условия. Это потенциальное вознаграждение, а не гарантированная выплата. Итог зависит от действующих правил программы и проверки.' },
+  { q: 'Как оформить карту?', a: 'Нажми «Получить карту» и перейди по реферальной ссылке. Дальнейшие действия выполняй в официальном приложении Ozon Банка и сверяйся с актуальными условиями программы.' },
+  { q: 'Где пройти верификацию?', a: 'Согласно инструкции проекта, открой профиль в приложении Ozon Банка, найди раздел «Повысить» и выбери доступный способ идентификации.' },
+  { q: 'Куда написать после выполнения шагов?', a: <>Напиши менеджеру проекта в Telegram: <a className="inline-link" href={TELEGRAM_URL} target="_blank" rel="noreferrer">{TELEGRAM_HANDLE}</a>.</> },
+  { q: 'Когда начисляется вознаграждение?', a: 'После проверки выполнения требований. Конкретные сроки в предоставленном описании не указаны — уточняй их в действующих правилах реферальной программы.' },
+  { q: 'Что делать, если возникла проблема?', a: <>Свяжись с менеджером проекта в <a className="inline-link" href={TELEGRAM_URL} target="_blank" rel="noreferrer">Telegram</a>. По вопросам работы карты и приложения используй официальные каналы поддержки Ozon Банка.</> },
+]
+const reveal = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: 'easeOut' } } }
+
+function Logo() { return <a href="#home" className="brand" aria-label="WEST — главная"><span className="brand-mark"><i /><i /><i /></span><span>WEST</span></a> }
+function ActionLink({ href, children, secondary = false }: { href: string; children: React.ReactNode; secondary?: boolean }) {
+  return <a className={`button ${secondary ? 'button-secondary' : 'button-primary'}`} href={href} target="_blank" rel="noreferrer">{children}<ArrowUpRight size={17} /></a>
+}
+function Header() {
+  const [open, setOpen] = useState(false)
+  return <header className="header"><div className="nav-shell"><Logo /><button className="menu-toggle" onClick={() => setOpen(!open)} aria-label="Открыть меню"><span /><span /></button><nav className={open ? 'nav nav-open' : 'nav'}><a href="#home" onClick={() => setOpen(false)}>Главная</a><a href="#steps" onClick={() => setOpen(false)}>Инструкция</a><a href="#conditions" onClick={() => setOpen(false)}>Условия</a><a href="#faq" onClick={() => setOpen(false)}>FAQ</a><a className="nav-telegram" href={TELEGRAM_URL} target="_blank" rel="noreferrer"><Send size={14} /> Telegram</a></nav></div></header>
+}
+function BankCard() {
+  return <div className="card-stage" aria-label="Декоративная иллюстрация синей банковской карты"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><div className="card-shadow"/><motion.div className="bank-card" animate={{ y: [0, -10, 0], rotateZ: [-7, -5, -7], rotateY: [-8, 8, -8] }} transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }} whileHover={{ scale: 1.06, rotateY: 22, rotateZ: 0, transition: { duration: .5 } }}><div className="card-glare"/><div className="card-top"><span className="card-brand">OZON <b>BANK</b></span><span className="contactless">)))</span></div><div className="chip"><span/><span/><span/><span/></div><div className="card-bottom"><span>БАНКОВСКАЯ КАРТА</span><span className="ozon-symbol">O</span></div></motion.div><div className="float-tag"><Sparkles size={13}/> DIGITAL FINANCE</div></div>
+}
+function CardBanner() {
+  return <motion.article className="card-banner" variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, amount: .2 }}><div className="banner-noise"/><div className="card-banner-copy"><div className="eyebrow"><span className="live-dot"/> OZON BANK <span className="eyebrow-line"/></div><h2>ТВОЯ НОВАЯ<br/><span>КАРТА</span></h2><p>Оформи карту по нашей<br className="desktop-break"/> реферальной ссылке.</p><ActionLink href={REFERRAL_URL}>ПОЛУЧИТЬ КАРТУ</ActionLink></div><BankCard/><div className="banner-index">01 <span>/ 02</span></div></motion.article>
+}
+function StepsBanner() {
+  return <motion.article className="steps-banner" variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, amount: .2 }}><div className="steps-heading"><div><span className="section-kicker">ТВОЙ МАРШРУТ</span><h2>КАК ПОЛУЧИТЬ<br/><span>БОНУС?</span></h2><p>Всего 5 простых шагов</p></div><div className="steps-orb"><Zap size={24}/></div></div><div className="compact-steps">{steps.map((step, i) => { const Icon = step.icon; return <div className="compact-step" key={step.title}><span className="step-number">0{i + 1}</span><span className="step-icon"><Icon size={17}/></span><div><h3>{step.title}</h3><p>{step.desc}</p>{i === 3 && <a className="manager-link" href={TELEGRAM_URL} target="_blank" rel="noreferrer">{TELEGRAM_HANDLE} <ArrowUpRight size={13}/></a>}</div></div> })}</div><div className="banner-index">02 <span>/ 02</span></div></motion.article>
+}
+function Rewards() {
+  return <section className="section rewards-section"><motion.div className="section-head" variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true }}><span className="section-kicker">THE REWARD</span><h2>ТВОЁ <span>ВОЗНАГРАЖДЕНИЕ</span></h2><p>Две составляющие предложения — один понятный маршрут.</p></motion.div><div className="reward-grid"><motion.div className="reward-card" variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true }}><span className="reward-label">01 / ОСНОВА</span><strong>300 <small>₽</small></strong><p>За оформление карты</p><div className="reward-icon"><WalletCards size={22}/></div></motion.div><motion.div className="reward-card" variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true }}><span className="reward-label">02 / ДОПОЛНИТЕЛЬНО</span><strong>+50 <small>₽</small></strong><p>За выполнение дополнительного условия</p><div className="reward-icon"><Sparkles size={22}/></div></motion.div><motion.div className="reward-card reward-total" variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true }}><span className="reward-label">TOTAL / ПОТЕНЦИАЛЬНО</span><strong>350 <small>₽</small></strong><p>Общее потенциальное вознаграждение</p><div className="reward-icon"><Zap size={22}/></div></motion.div></div><p className="fine-print"><span>*</span> Суммы указаны как потенциальное вознаграждение. Получение зависит от действующих правил реферальной программы, выполнения всех применимых условий и проверки. Выплата не гарантируется.</p></section>
+}
+function DetailedSteps() {
+  return <section className="section detail-section" id="steps"><div className="section-head"><span className="section-kicker">STEP BY STEP</span><h2>ПУТЬ К <span>РЕЗУЛЬТАТУ</span></h2><p>Сохрани последовательность и двигайся в своём темпе.</p></div><div className="timeline">{steps.map((step, i) => { const Icon = step.icon; return <motion.div className="timeline-item" key={step.title} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, amount: .25 }}><div className="timeline-marker"><span>0{i + 1}</span></div><div className="timeline-card"><div className="timeline-icon"><Icon size={22}/></div><div className="timeline-copy"><span className="section-kicker">ШАГ 0{i + 1}</span><h3>{step.title}</h3><p>{step.desc}</p>{i === 3 && <ActionLink href={TELEGRAM_URL} secondary>НАПИСАТЬ МЕНЕДЖЕРУ</ActionLink>}</div><ArrowRight className="timeline-arrow" size={20}/></div></motion.div> })}</div></section>
+}
+function Conditions() {
+  const items = ['Используй предоставленную реферальную ссылку.', 'Выполни требования оформления карты.', 'Пройди предусмотренные требования идентификации.', 'Дополнительное вознаграждение зависит от выполнения соответствующего условия.', 'Начисление возможно после проверки выполнения требований.']
+  return <section className="section conditions-section" id="conditions"><div className="conditions-panel"><div className="conditions-copy"><span className="section-kicker">IMPORTANT DETAILS</span><h2>УСЛОВИЯ<br/><span>УЧАСТИЯ</span></h2><p>Перед началом ознакомься с правилами, чтобы понимать, какие действия необходимы для участия.</p><div className="conditions-note"><ShieldCheck size={19}/><span>Окончательные условия определяются действующими правилами реферальной программы Ozon Банка.</span></div></div><div className="conditions-list">{items.map((item, i) => <div className="condition-row" key={item}><span><Check size={15}/></span><p>{item}</p></div>)}</div></div></section>
+}
+function FAQ() {
+  const [active, setActive] = useState<number | null>(0)
+  return <section className="section faq-section" id="faq"><div className="section-head"><span className="section-kicker">NEED TO KNOW</span><h2>ЧАСТЫЕ <span>ВОПРОСЫ</span></h2><p>Коротко ответили на то, что важно знать перед стартом.</p></div><div className="faq-list">{faq.map((item, i) => <div className={`faq-item ${active === i ? 'faq-active' : ''}`} key={item.q}><button className="faq-question" onClick={() => setActive(active === i ? null : i)} aria-expanded={active === i}><span className="faq-number">0{i + 1}</span><span>{item.q}</span><ChevronDown className="faq-chevron" size={19}/></button><AnimatePresence initial={false}>{active === i && <motion.div className="faq-answer-wrap" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: .28 }}><p className="faq-answer">{item.a}</p></motion.div>}</AnimatePresence></div>)}</div></section>
+}
+function FinalCTA() {
+  return <section className="final-cta"><div className="cta-glow"/><div className="cta-content"><span className="section-kicker">YOUR NEXT MOVE</span><h2>ГОТОВ <span>НАЧАТЬ?</span></h2><p>Пять простых шагов отделяют тебя от участия<br className="desktop-break"/> в реферальной программе.</p><div className="cta-actions"><ActionLink href={REFERRAL_URL}>ОФОРМИТЬ КАРТУ</ActionLink><ActionLink href={TELEGRAM_URL} secondary><Send size={15}/> НАПИСАТЬ МЕНЕДЖЕРУ</ActionLink></div></div><div className="cta-decoration">W</div></section>
+}
+function Footer() {
+  return <footer className="footer"><div className="footer-top"><Logo/><p>ТВОЙ ШАГ К НОВЫМ ВОЗМОЖНОСТЯМ</p><div className="footer-links"><a href="#home">Главная</a><a href="#steps">Инструкция</a><a href="#conditions">Условия</a><a href="#faq">FAQ</a><a href={TELEGRAM_URL} target="_blank" rel="noreferrer">Telegram <ArrowUpRight size={12}/></a></div></div><div className="footer-bottom"><span>© {new Date().getFullYear()} WEST PROJECT</span><p>WEST — независимый информационный проект. Не является официальным сайтом Ozon или Ozon Банка. Использование названия и упоминание банковского продукта не означает официального партнёрства. Условия и начисление вознаграждения определяются правилами соответствующей программы.</p></div></footer>
+}
+export default function App() {
+  const reduceMotion = useReducedMotion()
+  return <div className="app-shell" id="home"><div className="ambient ambient-a"/><div className="ambient ambient-b"/><Header/><main><section className="hero"><motion.div className="hero-title" initial={reduceMotion ? false : { opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .9 }}><span className="hero-overline">INDEPENDENT REFERRAL PROJECT</span><h1>WEST</h1><p>ТВОЙ ШАГ К НОВЫМ ВОЗМОЖНОСТЯМ</p></motion.div><div className="hero-grid"><CardBanner/><StepsBanner/></div><a href="#rewards" className="scroll-cue">SCROLL TO EXPLORE <ArrowDown size={13}/></a></section><div id="rewards"><Rewards/></div><DetailedSteps/><Conditions/><FAQ/><FinalCTA/></main><Footer/></div>
+}
